@@ -1,0 +1,127 @@
+:root {
+  --bg: #f6f8fb;
+  --surface: #ffffff;
+  --border: #e4e7eb;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --warning: #d97706;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.nav .brand { font-weight: 700; font-size: 18px; }
+.nav .spacer { flex: 1; }
+.nav a, .nav button { color: var(--text); background: none; border: none; cursor: pointer; padding: 6px 10px; border-radius: 6px; font-size: 14px; }
+.nav a:hover, .nav button:hover { background: #f1f5f9; text-decoration: none; }
+
+.container { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+h1 { font-size: 24px; margin: 0 0 16px; }
+h2 { font-size: 18px; margin: 0 0 12px; }
+label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+}
+textarea { min-height: 80px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); outline-offset: -1px; }
+
+.row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.row > * { flex: 1 1 180px; }
+
+.btn {
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--primary);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.btn:hover { background: var(--primary-hover); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn.secondary { background: #fff; color: var(--text); border-color: var(--border); }
+.btn.secondary:hover { background: #f1f5f9; }
+.btn.danger { background: var(--danger); }
+.btn.success { background: var(--success); }
+.btn.small { padding: 6px 10px; font-size: 13px; }
+
+.pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.pill.lost { background: #fee2e2; color: #b91c1c; }
+.pill.found { background: #dcfce7; color: #166534; }
+.pill.open { background: #dbeafe; color: #1e40af; }
+.pill.claimed { background: #fef3c7; color: #92400e; }
+.pill.returned { background: #dcfce7; color: #166534; }
+.pill.closed { background: #e5e7eb; color: #374151; }
+.pill.pending { background: #fef3c7; color: #92400e; }
+.pill.accepted { background: #dcfce7; color: #166534; }
+.pill.rejected { background: #fee2e2; color: #b91c1c; }
+.pill.completed { background: #dcfce7; color: #166534; }
+.pill.not_declared { background: #e5e7eb; color: #374151; }
+
+.alert { padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 14px; }
+.alert.error { background: #fee2e2; color: #991b1b; }
+.alert.success { background: #dcfce7; color: #166534; }
+
+.muted { color: var(--muted); font-size: 13px; }
+.meta { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
+.meta > * { flex-shrink: 0; }
+
+.auth-wrap { max-width: 400px; margin: 48px auto; }
+.stat { display: flex; flex-direction: column; padding: 16px; background: #f9fafb; border-radius: 8px; }
+.stat .num { font-size: 28px; font-weight: 700; }
+.stat .label { font-size: 12px; color: var(--muted); text-transform: uppercase; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); }
+th { font-size: 12px; color: var(--muted); text-transform: uppercase; }
