@@ -8,11 +8,11 @@
 export type EventHandler<T = unknown> = (payload: T) => void;
 
 export interface DomainEvents {
-  'claim.submitted': { ownerId: number; itemTitle: string; claimerName: string };
-  'claim.accepted': { claimerId: number; itemTitle: string };
-  'claim.rejected': { claimerId: number; itemTitle: string };
-  'reward.completed': { claimerId: number; itemTitle: string; amount: number };
-  'user.suspended': { userId: number };
+  'claim.submitted': { ownerId: string; itemTitle: string; claimerName: string };
+  'claim.accepted': { claimerId: string; itemTitle: string };
+  'claim.rejected': { claimerId: string; itemTitle: string };
+  'reward.completed': { claimerId: string; itemTitle: string; amount: number };
+  'user.suspended': { userId: string };
 }
 
 class EventBus {

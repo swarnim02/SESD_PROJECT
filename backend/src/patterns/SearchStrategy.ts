@@ -1,70 +1,68 @@
+import { Types } from 'mongoose';
 import { ItemStatus, ItemType } from '../types/domain';
 
-export interface SearchFragment {
-  clause: string;
-  params: (string | number)[];
-}
+export type MongoFilter = Record<string, unknown>;
 
 /**
  * Strategy pattern for item search.
  *
- * Each strategy knows how to build a WHERE-clause fragment and its parameter
- * bindings. The ItemRepository composes whichever strategies the caller asked
- * for, so adding a new filter (e.g. radius search) means writing one class —
- * no if/else chain in the repository.
+ * Each strategy knows how to build a single Mongo filter fragment. The
+ * ItemRepository merges whichever strategies the caller asked for, so adding a
+ * new filter (e.g. radius search) means writing one class — no if/else chain
+ * in the repository.
  */
 export abstract class SearchStrategy {
-  abstract apply(): SearchFragment;
+  abstract apply(): MongoFilter;
 }
 
 export class KeywordStrategy extends SearchStrategy {
   constructor(private readonly keyword: string) { super(); }
-  apply(): SearchFragment {
-    const like = `%${this.keyword}%`;
-    return { clause: '(title LIKE ? OR description LIKE ?)', params: [like, like] };
+  apply(): MongoFilter {
+    const pattern = new RegExp(this.escape(this.keyword), 'i');
+    return { $or: [{ title: pattern }, { description: pattern }] };
   }
+  private escape(s: string): string { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 }
 
 export class CategoryStrategy extends SearchStrategy {
-  constructor(private readonly categoryId: number) { super(); }
-  apply(): SearchFragment {
-    return { clause: 'category_id = ?', params: [this.categoryId] };
+  constructor(private readonly categoryId: string) { super(); }
+  apply(): MongoFilter {
+    return Types.ObjectId.isValid(this.categoryId)
+      ? { categoryId: new Types.ObjectId(this.categoryId) }
+      : { categoryId: null };
   }
 }
 
 export class LocationStrategy extends SearchStrategy {
   constructor(private readonly location: string) { super(); }
-  apply(): SearchFragment {
-    return { clause: 'location LIKE ?', params: [`%${this.location}%`] };
+  apply(): MongoFilter {
+    return { location: new RegExp(this.location.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i') };
   }
 }
 
 export class StatusStrategy extends SearchStrategy {
   constructor(private readonly status: ItemStatus) { super(); }
-  apply(): SearchFragment {
-    return { clause: 'status = ?', params: [this.status] };
-  }
+  apply(): MongoFilter { return { status: this.status }; }
 }
 
 export class TypeStrategy extends SearchStrategy {
   constructor(private readonly type: ItemType) { super(); }
-  apply(): SearchFragment {
-    return { clause: 'type = ?', params: [this.type] };
-  }
+  apply(): MongoFilter { return { type: this.type }; }
 }
 
 export class DateRangeStrategy extends SearchStrategy {
   constructor(private readonly from?: string, private readonly to?: string) { super(); }
-  apply(): SearchFragment {
-    if (this.from && this.to) return { clause: 'date_lost_or_found BETWEEN ? AND ?', params: [this.from, this.to] };
-    if (this.from) return { clause: 'date_lost_or_found >= ?', params: [this.from] };
-    return { clause: 'date_lost_or_found <= ?', params: [this.to!] };
+  apply(): MongoFilter {
+    const range: Record<string, string> = {};
+    if (this.from) range.$gte = this.from;
+    if (this.to) range.$lte = this.to;
+    return { dateLostOrFound: range };
   }
 }
 
 export interface SearchQuery {
   keyword?: string;
-  categoryId?: number | string;
+  categoryId?: string;
   location?: string;
   status?: ItemStatus;
   type?: ItemType;
@@ -76,7 +74,7 @@ export interface SearchQuery {
 export function buildStrategies(query: SearchQuery = {}): SearchStrategy[] {
   const out: SearchStrategy[] = [];
   if (query.keyword) out.push(new KeywordStrategy(query.keyword));
-  if (query.categoryId) out.push(new CategoryStrategy(Number(query.categoryId)));
+  if (query.categoryId) out.push(new CategoryStrategy(String(query.categoryId)));
   if (query.location) out.push(new LocationStrategy(query.location));
   if (query.status) out.push(new StatusStrategy(query.status));
   if (query.type) out.push(new TypeStrategy(query.type));
