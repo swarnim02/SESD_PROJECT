@@ -1,7 +1,7 @@
 import { CategoryRow } from '../types/domain';
 
 export class Category {
-  readonly id: number;
+  readonly id: string;
   name: string;
   description: string | null;
   createdAt: string;
@@ -10,6 +10,6 @@ export class Category {
     this.id = row.id;
     this.name = row.name;
     this.description = row.description;
-    this.createdAt = row.created_at;
+    this.createdAt = row.createdAt;
   }
 }

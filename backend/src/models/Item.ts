@@ -6,10 +6,10 @@ import { ItemRow, ItemStatus, ItemType, RewardStatus } from '../types/domain';
  * (status transitions, default reward behaviour).
  */
 export class Item {
-  readonly id: number;
+  readonly id: string;
   title: string;
   description: string;
-  categoryId: number | null;
+  categoryId: string | null;
   location: string;
   dateLostOrFound: string;
   imageUrl: string | null;
@@ -17,25 +17,25 @@ export class Item {
   status: ItemStatus;
   rewardAmount: number;
   rewardStatus: RewardStatus;
-  createdBy: number;
+  createdBy: string;
   createdAt: string;
   updatedAt: string;
 
-  constructor(row: Partial<ItemRow> & { type: ItemType; created_by: number }) {
-    this.id = row.id ?? 0;
+  constructor(row: Partial<ItemRow> & { type: ItemType; createdBy: string }) {
+    this.id = row.id ?? '';
     this.title = row.title ?? '';
     this.description = row.description ?? '';
-    this.categoryId = row.category_id ?? null;
+    this.categoryId = row.categoryId ?? null;
     this.location = row.location ?? '';
-    this.dateLostOrFound = row.date_lost_or_found ?? '';
-    this.imageUrl = row.image_url ?? null;
+    this.dateLostOrFound = row.dateLostOrFound ?? '';
+    this.imageUrl = row.imageUrl ?? null;
     this.type = row.type;
     this.status = row.status ?? 'open';
-    this.rewardAmount = row.reward_amount ?? 0;
-    this.rewardStatus = row.reward_status ?? 'not_declared';
-    this.createdBy = row.created_by;
-    this.createdAt = row.created_at ?? '';
-    this.updatedAt = row.updated_at ?? '';
+    this.rewardAmount = row.rewardAmount ?? 0;
+    this.rewardStatus = row.rewardStatus ?? 'not_declared';
+    this.createdBy = row.createdBy;
+    this.createdAt = row.createdAt ?? '';
+    this.updatedAt = row.updatedAt ?? '';
   }
 
   isOpen(): boolean { return this.status === 'open'; }
@@ -52,20 +52,20 @@ export class Item {
     }
   }
 
-  static fromRow(row: ItemRow | undefined): Item | null {
+  static fromRow(row: ItemRow | undefined | null): Item | null {
     if (!row) return null;
     return row.type === 'lost' ? new LostItem(row) : new FoundItem(row);
   }
 }
 
 export class LostItem extends Item {
-  constructor(row: Partial<ItemRow> & { created_by: number }) {
+  constructor(row: Partial<ItemRow> & { createdBy: string }) {
     super({ ...row, type: 'lost' });
   }
 }
 
 export class FoundItem extends Item {
-  constructor(row: Partial<ItemRow> & { created_by: number }) {
+  constructor(row: Partial<ItemRow> & { createdBy: string }) {
     super({ ...row, type: 'found' });
   }
   override hasReward(): boolean { return false; }

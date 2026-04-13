@@ -1,9 +1,9 @@
 import { ClaimRow, ClaimStatus } from '../types/domain';
 
 export class Claim {
-  readonly id: number;
-  itemId: number;
-  claimerId: number;
+  readonly id: string;
+  itemId: string;
+  claimerId: string;
   message: string;
   claimStatus: ClaimStatus;
   createdAt: string;
@@ -11,12 +11,12 @@ export class Claim {
 
   constructor(row: ClaimRow) {
     this.id = row.id;
-    this.itemId = row.item_id;
-    this.claimerId = row.claimer_id;
+    this.itemId = row.itemId;
+    this.claimerId = row.claimerId;
     this.message = row.message;
-    this.claimStatus = row.claim_status;
-    this.createdAt = row.created_at;
-    this.updatedAt = row.updated_at;
+    this.claimStatus = row.claimStatus;
+    this.createdAt = row.createdAt;
+    this.updatedAt = row.updatedAt;
   }
 
   isPending(): boolean { return this.claimStatus === 'pending'; }

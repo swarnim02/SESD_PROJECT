@@ -5,68 +5,68 @@ export type RewardStatus = 'not_declared' | 'pending' | 'completed';
 export type ClaimStatus = 'pending' | 'accepted' | 'rejected';
 
 export interface UserRow {
-  id: number;
+  id: string;
   name: string;
   email: string;
   password: string;
   phone: string | null;
   role: UserRole;
-  is_suspended: number;
-  created_at: string;
-  updated_at: string;
+  isSuspended: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CategoryRow {
-  id: number;
+  id: string;
   name: string;
   description: string | null;
-  created_at: string;
+  createdAt: string;
 }
 
 export interface ItemRow {
-  id: number;
+  id: string;
   title: string;
   description: string;
-  category_id: number | null;
+  categoryId: string | null;
   location: string;
-  date_lost_or_found: string;
-  image_url: string | null;
+  dateLostOrFound: string;
+  imageUrl: string | null;
   type: ItemType;
   status: ItemStatus;
-  reward_amount: number;
-  reward_status: RewardStatus;
-  created_by: number;
-  created_at: string;
-  updated_at: string;
+  rewardAmount: number;
+  rewardStatus: RewardStatus;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ClaimRow {
-  id: number;
-  item_id: number;
-  claimer_id: number;
+  id: string;
+  itemId: string;
+  claimerId: string;
   message: string;
-  claim_status: ClaimStatus;
-  created_at: string;
-  updated_at: string;
+  claimStatus: ClaimStatus;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface NotificationRow {
-  id: number;
-  user_id: number;
+  id: string;
+  userId: string;
   message: string;
-  is_read: number;
-  created_at: string;
+  isRead: boolean;
+  createdAt: string;
 }
 
 export interface ItemPayload {
   title: string;
   description: string;
-  categoryId?: number | null;
+  categoryId?: string | null;
   location: string;
   dateLostOrFound: string;
   imageUrl?: string | null;
   rewardAmount?: number;
-  createdBy: number;
+  createdBy: string;
 }
 
 export interface RegisterPayload {
@@ -82,7 +82,7 @@ export interface LoginPayload {
 }
 
 export interface JwtPayload {
-  id: number;
+  id: string;
   role: UserRole;
   email: string;
 }

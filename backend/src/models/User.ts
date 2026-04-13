@@ -1,14 +1,14 @@
 import { UserRow, UserRole } from '../types/domain';
 
 /**
- * User — domain object mirroring the `users` table.
+ * User — domain object mirroring the `users` collection.
  *
  * Encapsulation: the password hash is filtered out by toPublic() before the
  * object is ever sent to a client. Polymorphism: Admin extends User and
  * exposes moderation capabilities via isAdmin()/canModerate().
  */
 export class User {
-  readonly id: number;
+  readonly id: string;
   name: string;
   email: string;
   password: string;
@@ -25,9 +25,9 @@ export class User {
     this.password = row.password;
     this.phone = row.phone;
     this.role = row.role;
-    this.isSuspended = Boolean(row.is_suspended);
-    this.createdAt = row.created_at;
-    this.updatedAt = row.updated_at;
+    this.isSuspended = row.isSuspended;
+    this.createdAt = row.createdAt;
+    this.updatedAt = row.updatedAt;
   }
 
   isAdmin(): boolean { return this.role === 'admin'; }
