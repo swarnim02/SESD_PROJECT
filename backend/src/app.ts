@@ -1,7 +1,6 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 
-import { initSchema } from './config/schema';
 import authRoutes from './routes/auth.routes';
 import itemRoutes from './routes/item.routes';
 import claimRoutes from './routes/claim.routes';
@@ -12,8 +11,6 @@ import { notFound, errorHandler } from './middleware/errorMiddleware';
 import './services/NotificationService';
 
 export function createApp(): Application {
-  initSchema();
-
   const app = express();
   app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
   app.use(express.json({ limit: '1mb' }));
