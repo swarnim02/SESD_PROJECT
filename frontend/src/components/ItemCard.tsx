@@ -1,22 +1,36 @@
 import { Link } from 'react-router-dom';
 import type { Item } from '../types/models';
+import { Icon } from './Icon';
+
+function formatDate(value: string): string {
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
 
 export function ItemCard({ item }: { item: Item }) {
   return (
-    <Link to={`/items/${item.id}`} className="card" style={{ display: 'block', color: 'inherit' }}>
-      <div className="meta" style={{ marginBottom: 8 }}>
-        <span className={`pill ${item.type}`}>{item.type}</span>
-        <span className={`pill ${item.status}`}>{item.status}</span>
-        {item.rewardAmount > 0 && <span className="pill pending">₹{item.rewardAmount}</span>}
+    <Link to={`/items/${item.id}`} className="item-card">
+      <div className="thumb">
+        {item.imageUrl
+          ? <img src={item.imageUrl} alt={item.title} />
+          : <Icon name={item.type === 'lost' ? 'search' : 'package'} />}
+        <span className={`pill ${item.type} thumb-badge`}>{item.type}</span>
+        {item.rewardAmount > 0 && (
+          <span className="pill reward thumb-reward">Rs. {item.rewardAmount}</span>
+        )}
       </div>
-      <h2 style={{ margin: '4px 0' }}>{item.title}</h2>
-      <p className="muted" style={{ margin: '4px 0', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-        {item.description}
-      </p>
-      <div className="meta" style={{ marginTop: 8 }}>
-        <span>📍 {item.location}</span>
-        <span>·</span>
-        <span>{item.dateLostOrFound}</span>
+      <div className="body">
+        <h2>{item.title}</h2>
+        <p>{item.description}</p>
+        <div className="foot">
+          <span className="meta icon-text" style={{ minWidth: 0 }}>
+            <Icon name="location" size={14} />
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.location}</span>
+          </span>
+          <span className={`pill ${item.status}`}>{item.status}</span>
+        </div>
+        <span className="subtle icon-text"><Icon name="calendar" size={12} /> {formatDate(item.dateLostOrFound)}</span>
       </div>
     </Link>
   );
