@@ -26,22 +26,30 @@ export function LoginPage() {
 
   return (
     <div className="auth-wrap">
-      <div className="card">
-        <h1>Login</h1>
+      <div className="auth-card">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+          <span className="brand-logo" style={{ width: 36, height: 36, fontSize: 16 }}>LF</span>
+          <div>
+            <h1>Welcome back</h1>
+            <div className="sub">Sign in to continue to Lost &amp; Found.</div>
+          </div>
+        </div>
         {error && <div className="alert error">{error}</div>}
         <form onSubmit={onSubmit}>
-          <label>Email</label>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
-          <div style={{ height: 12 }} />
-          <label>Password</label>
-          <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required />
-          <div style={{ height: 16 }} />
-          <button className="btn" disabled={busy} style={{ width: '100%' }}>
-            {busy ? 'Signing in…' : 'Sign in'}
+          <div className="field">
+            <label>Email</label>
+            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required placeholder="you@example.com" />
+          </div>
+          <div className="field">
+            <label>Password</label>
+            <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required placeholder="••••••••" />
+          </div>
+          <button className="btn block" disabled={busy}>
+            {busy ? <><span className="spinner" /> Signing in…</> : 'Sign in'}
           </button>
         </form>
         <p className="muted" style={{ marginTop: 16, textAlign: 'center' }}>
-          No account? <Link to="/register">Register</Link>
+          New here? <Link to="/register">Create an account</Link>
         </p>
       </div>
     </div>

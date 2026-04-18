@@ -28,7 +28,7 @@ export function ReportItemPage({ kind }: { kind: 'lost' | 'found' }) {
       const payload = {
         title: form.title,
         description: form.description,
-        categoryId: form.categoryId ? Number(form.categoryId) : null,
+        categoryId: form.categoryId || null,
         location: form.location,
         dateLostOrFound: form.dateLostOrFound,
         imageUrl: form.imageUrl || null,
@@ -43,45 +43,75 @@ export function ReportItemPage({ kind }: { kind: 'lost' | 'found' }) {
     }
   }
 
+  const isLost = kind === 'lost';
+
   return (
-    <>
-      <h1>{kind === 'lost' ? 'Report a Lost Item' : 'Post a Found Item'}</h1>
-      <form className="card" onSubmit={onSubmit}>
+    <div className="container-narrow" style={{ margin: 0, padding: 0 }}>
+      <div className="page-head">
+        <div>
+          <h1 style={{ marginBottom: 0 }}>{isLost ? 'Report a lost item' : 'Post a found item'}</h1>
+          <div className="sub">
+            {isLost
+              ? 'Tell us what you lost — people who found it can submit claims you can review.'
+              : 'Share what you found so the rightful owner can reach out.'}
+          </div>
+        </div>
+        <span className={`pill ${isLost ? 'lost' : 'found'}`}>{kind}</span>
+      </div>
+
+      <form className="card elevated" onSubmit={onSubmit}>
         {error && <div className="alert error">{error}</div>}
-        <label>Title</label>
-        <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
-        <div style={{ height: 12 }} />
-        <label>Description</label>
-        <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required />
-        <div className="row" style={{ marginTop: 12 }}>
+
+        <div className="field">
+          <label>Title</label>
+          <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required placeholder={isLost ? 'e.g. Black leather wallet' : 'e.g. Silver key ring with 3 keys'} />
+          <div className="hint">A short headline helps others recognize the item.</div>
+        </div>
+
+        <div className="field">
+          <label>Description</label>
+          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required placeholder="Distinguishing marks, contents, color, brand, condition…" />
+        </div>
+
+        <div className="row">
           <div>
             <label>Category</label>
             <select value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })}>
-              <option value="">—</option>
+              <option value="">— Select —</option>
               {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
           <div>
             <label>Location</label>
-            <input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} required />
+            <input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} required placeholder="e.g. Library, 2nd floor" />
           </div>
           <div>
-            <label>Date {kind === 'lost' ? 'lost' : 'found'}</label>
+            <label>Date {isLost ? 'lost' : 'found'}</label>
             <input type="date" value={form.dateLostOrFound} onChange={(e) => setForm({ ...form, dateLostOrFound: e.target.value })} required />
           </div>
         </div>
-        <label>Image URL (optional)</label>
-        <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://…" />
-        {kind === 'lost' && (
-          <>
-            <div style={{ height: 12 }} />
-            <label>Reward amount (optional, ₹)</label>
-            <input type="number" min={0} value={form.rewardAmount} onChange={(e) => setForm({ ...form, rewardAmount: e.target.value })} />
-          </>
+
+        <div className="field">
+          <label>Image URL <span className="subtle">(optional)</span></label>
+          <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://…" />
+          <div className="hint">A photo makes recognition much faster.</div>
+        </div>
+
+        {isLost && (
+          <div className="field">
+            <label>Reward amount <span className="subtle">(optional, Rs.)</span></label>
+            <input type="number" min={0} value={form.rewardAmount} onChange={(e) => setForm({ ...form, rewardAmount: e.target.value })} placeholder="0" />
+            <div className="hint">You can declare or complete a reward later from the item page.</div>
+          </div>
         )}
-        <div style={{ height: 16 }} />
-        <button className="btn" disabled={busy}>{busy ? 'Saving…' : 'Submit'}</button>
+
+        <div className="divider" />
+
+        <div className="row-center" style={{ justifyContent: 'flex-end' }}>
+          <button type="button" className="btn ghost" onClick={() => navigate(-1)}>Cancel</button>
+          <button className="btn" disabled={busy}>{busy ? <><span className="spinner" /> Saving…</> : (isLost ? 'Post lost item' : 'Post found item')}</button>
+        </div>
       </form>
-    </>
+    </div>
   );
 }
